@@ -7,7 +7,8 @@ public class ReportInformation {
     this.food = food;
   }
 
-  public Food getFood() {
-    return food;
+  @Override
+  public String toString() {
+    return food.toString();
   }
 }

@@ -10,7 +10,7 @@ public class Ingredient {
     this.description = description;
   }
 
-  public String getDescription() {
+  String getDescription() {
     return description;
   }
 }

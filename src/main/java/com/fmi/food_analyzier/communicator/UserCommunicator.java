@@ -9,6 +9,11 @@ import java.util.Arrays;
 import java.util.stream.Collectors;
 
 class UserCommunicator implements Communicator {
+  private static final String USAGE = "Unknown command";
+  private static final String UNKNOWN_COMMAND = "Unknown command";
+  private static final String REGEX = "\\s+";
+  private static final String DELIMITER = " ";
+
   private final Reader reader;
   private final Writer writer;
 
@@ -20,12 +25,12 @@ class UserCommunicator implements Communicator {
 
   @Override
   public void printUsage() {
-    writer.write("Usage");
+    writer.write(USAGE);
   }
 
   @Override
   public void printUnknownCommandMessage(final String command) {
-    writer.write("Unknown command");
+    writer.write(UNKNOWN_COMMAND);
   }
 
   @Override
@@ -36,12 +41,12 @@ class UserCommunicator implements Communicator {
   @Override
   public RequestData readUserRequest() {
     var input = reader.read();
-    var words = input.split("\\s+");
+    var words = input.split(REGEX);
 
     RequestType requestType;
     while ((requestType = getRequestType(words[0])) == null) {
       input = reader.read();
-      words = input.split("\\s+");
+      words = input.split(REGEX);
     }
 
     return new RequestData(requestType, getFoodName(words));
@@ -57,6 +62,6 @@ class UserCommunicator implements Communicator {
   }
 
   private String getFoodName(final String[] words) {
-    return Arrays.stream(words).skip(1).collect(Collectors.joining());
+    return Arrays.stream(words).skip(1).collect(Collectors.joining(DELIMITER));
   }
 }

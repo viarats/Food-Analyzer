@@ -2,6 +2,8 @@ package com.fmi.food_analyzier.request_executor;
 
 import com.fmi.food_analyzier.entities.Product;
 import com.fmi.food_analyzier.entities.ProductList;
+import com.fmi.food_analyzier.entities.report.FoodReport;
+import com.fmi.food_analyzier.entities.report.ReportInformation;
 import com.fmi.food_analyzier.httpclient.HttpClient;
 import com.fmi.food_analyzier.httpclient.HttpResponse;
 import com.fmi.food_analyzier.request.RequestData;
@@ -9,6 +11,7 @@ import com.google.gson.Gson;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 public class RequestExecutorImpl implements RequestExecutor {
@@ -18,7 +21,11 @@ public class RequestExecutorImpl implements RequestExecutor {
   private static final String FOOD_PARAMETER = "q";
   private static final String NDBNO_PARAMETER = "ndbno";
   private static final String TYPE_PARAMETER = "type";
+  private static final String TYPE = "b";
   private static final String FORMAT_PARAMETER = "format";
+  private static final String JSON = "json";
+  private static final String NO_AVAILABLE_INFORMATION_MESSAGE =
+      "No available information for this product";
 
   private final String apiKey;
   private final HttpClient httpClient;
@@ -45,17 +52,39 @@ public class RequestExecutorImpl implements RequestExecutor {
     }
   }
 
-  private CompletableFuture<String> processGetFoodRequest(final String foodParameter) {
-    final var parameters = Map.of(API_KEY_PARAMETER, apiKey, FOOD_PARAMETER, foodParameter);
+  private CompletableFuture<String> processGetFoodRequest(final String food) {
+    final var parameters = Map.of(API_KEY_PARAMETER, apiKey, FOOD_PARAMETER, food);
     final var response = httpClient.executeGetRequest(GET_FOOD_ENDPOINT, parameters);
     return response
         .thenApply(HttpResponse::getBody)
         .thenApply(body -> gson.fromJson(body, Product.class))
         .thenApply(Product::getList)
-        .thenApply(ProductList::toString);
+        .thenApply(Optional::ofNullable)
+        .thenApply(
+            optional ->
+                optional.map(ProductList::toString).orElse(NO_AVAILABLE_INFORMATION_MESSAGE));
   }
 
-  private CompletableFuture<String> processGetFoodReportRequest(final String ndbnoParameter) {
-    return null;
+  private CompletableFuture<String> processGetFoodReportRequest(final String ndbno) {
+    final var parameters =
+        Map.of(
+            API_KEY_PARAMETER,
+            apiKey,
+            NDBNO_PARAMETER,
+            ndbno,
+            TYPE_PARAMETER,
+            TYPE,
+            FORMAT_PARAMETER,
+            JSON);
+
+    final var response = httpClient.executeGetRequest(GET_FOOD_REPORT_ENDPOINT, parameters);
+    return response
+        .thenApply(HttpResponse::getBody)
+        .thenApply(body -> gson.fromJson(body, FoodReport.class))
+        .thenApply(FoodReport::getInformation)
+        .thenApply(Optional::ofNullable)
+        .thenApply(
+            optional ->
+                optional.map(ReportInformation::toString).orElse(NO_AVAILABLE_INFORMATION_MESSAGE));
   }
 }

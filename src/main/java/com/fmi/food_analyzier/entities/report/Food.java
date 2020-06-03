@@ -8,11 +8,14 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class Food {
-  private final String name;
+  private static final String NAME = "Name: ";
+  private static final String INGREDIENTS = "Ingredients: ";
+  private static final String DELIMITER = "\n";
 
   @SerializedName("ing")
   private final Ingredient ingredients;
 
+  private final String name;
   private final Set<Nutrient> nutrients;
 
   public Food(final String name, final Ingredient ingredients, final Set<Nutrient> nutrients) {
@@ -21,28 +24,17 @@ public class Food {
     this.nutrients = nutrients;
   }
 
-  public String getName() {
-    return name;
-  }
-
-  public Ingredient getIngredients() {
-    return ingredients;
-  }
-
-  public Set<Nutrient> getNutrients() {
-    return nutrients;
-  }
-
   @Override
   public String toString() {
-    final StringBuilder builder = new StringBuilder("Name: ");
+    final StringBuilder builder = new StringBuilder(NAME);
     builder.append(name);
 
     Optional.ofNullable(ingredients)
         .ifPresent(
-            ingredients -> builder.append("\nIngredients: ").append(ingredients.getDescription()));
+            ingredients ->
+                builder.append(DELIMITER).append(INGREDIENTS).append(ingredients.getDescription()));
 
-    builder.append("\n");
+    builder.append(DELIMITER);
     Arrays.stream(NutrientType.values()).forEach(type -> appendNutrient(builder, type));
 
     return builder.toString();
@@ -55,6 +47,6 @@ public class Food {
                 .filter(nutrient -> nutrient.getName().endsWith(type.getName()))
                 .map(Nutrient::toString)
                 .collect(Collectors.joining()))
-        .append("\n");
+        .append(DELIMITER);
   }
 }

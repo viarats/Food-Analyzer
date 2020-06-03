@@ -11,6 +11,7 @@ public class PropertiesLoader {
       final var properties = new Properties();
       properties.load(inputStream);
       return properties;
+
     } catch (final IOException e) {
       throw new RuntimeException(e);
     }
@@ -21,6 +22,6 @@ public class PropertiesLoader {
         .orElseThrow(
             () ->
                 new RuntimeException(
-                    String.format("Could not load inputstream of file => %s", filename)));
+                    String.format("Could not load input stream of file => %s", filename)));
   }
 }
