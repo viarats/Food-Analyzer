@@ -50,6 +50,7 @@ class NettyClient implements Client {
       final var channel = bootstrap.connect(host, port).sync().channel();
 
       communicator.printUsage();
+      communicator.printEnterPoint();
 
       ChannelFuture lastWriteFuture = null;
       while (true) {

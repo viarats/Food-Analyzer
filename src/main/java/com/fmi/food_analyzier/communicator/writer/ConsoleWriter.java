@@ -4,6 +4,11 @@ class ConsoleWriter implements Writer {
 
   @Override
   public void write(final String message) {
-      System.out.println(message);
+    System.out.print(message);
+  }
+
+  @Override
+  public void writeLine(final String message) {
+    System.out.println(message);
   }
 }

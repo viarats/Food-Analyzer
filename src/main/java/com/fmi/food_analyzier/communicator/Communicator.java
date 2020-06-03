@@ -6,7 +6,7 @@ public interface Communicator {
 
   void printUsage();
 
-  void printUnknownCommandMessage(String command);
+  void printEnterPoint();
 
   void printRequestResult(String result);
 

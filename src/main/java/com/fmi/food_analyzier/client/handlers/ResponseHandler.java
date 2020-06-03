@@ -18,6 +18,7 @@ public class ResponseHandler extends SimpleChannelInboundHandler<String> {
   @Override
   public void channelRead0(final ChannelHandlerContext context, final String message) {
     communicator.printRequestResult(message);
+    communicator.printEnterPoint();
   }
 
   @Override

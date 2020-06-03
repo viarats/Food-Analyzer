@@ -9,8 +9,11 @@ import java.util.Arrays;
 import java.util.stream.Collectors;
 
 class UserCommunicator implements Communicator {
-  private static final String USAGE = "Unknown command";
-  private static final String UNKNOWN_COMMAND = "Unknown command";
+  private static final String USAGE =
+      "Supported requests are:\n get-food <food_name>\n get-food-report <ndbno>"
+          + "\nThe ndbno of a product can be retrieved from the \"get-food\" command";
+  private static final String ENTER_POINT = "> ";
+  private static final String UNKNOWN_COMMAND = "Unknown command => %s";
   private static final String REGEX = "\\s+";
   private static final String DELIMITER = " ";
 
@@ -25,17 +28,17 @@ class UserCommunicator implements Communicator {
 
   @Override
   public void printUsage() {
-    writer.write(USAGE);
+    writer.writeLine(USAGE);
   }
 
   @Override
-  public void printUnknownCommandMessage(final String command) {
-    writer.write(UNKNOWN_COMMAND);
+  public void printEnterPoint() {
+    writer.write(ENTER_POINT);
   }
 
   @Override
   public void printRequestResult(final String result) {
-    writer.write(result);
+    writer.writeLine(result);
   }
 
   @Override
@@ -44,7 +47,9 @@ class UserCommunicator implements Communicator {
     var words = input.split(REGEX);
 
     RequestType requestType;
-    while ((requestType = getRequestType(words[0])) == null) {
+    while (words.length <= 0 || (requestType = getRequestType(words[0])) == null) {
+      printEnterPoint();
+
       input = reader.read();
       words = input.split(REGEX);
     }
@@ -59,6 +64,10 @@ class UserCommunicator implements Communicator {
       printUnknownCommandMessage(command);
       return null;
     }
+  }
+
+  private void printUnknownCommandMessage(final String command) {
+    writer.writeLine(String.format(UNKNOWN_COMMAND, command));
   }
 
   private String getFoodName(final String[] words) {
