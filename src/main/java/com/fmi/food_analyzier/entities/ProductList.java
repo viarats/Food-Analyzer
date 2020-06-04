@@ -17,6 +17,6 @@ public class ProductList {
 
   @Override
   public String toString() {
-    return items.stream().map(Item::toString).collect(joining(DELIMITER));
+    return items.stream().map(Item::toString).collect(joining(DELIMITER)) + DELIMITER;
   }
 }

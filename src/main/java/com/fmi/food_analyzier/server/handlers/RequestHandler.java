@@ -36,6 +36,7 @@ public class RequestHandler extends ChannelInboundHandlerAdapter {
 
   @Override
   public void exceptionCaught(final ChannelHandlerContext context, final Throwable cause) {
+    context.writeAndFlush(RequestExecutor.NO_AVAILABLE_INFORMATION_MESSAGE);
     cause.printStackTrace();
     context.close();
   }
