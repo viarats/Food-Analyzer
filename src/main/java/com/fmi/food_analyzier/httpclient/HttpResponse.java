@@ -4,7 +4,7 @@ public class HttpResponse {
   private final String body;
   private final int status;
 
-  HttpResponse(final String body, final int status) {
+  public HttpResponse(final String body, final int status) {
     this.body = body;
     this.status = status;
   }
