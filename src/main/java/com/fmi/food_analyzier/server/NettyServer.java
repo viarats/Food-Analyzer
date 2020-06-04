@@ -16,8 +16,12 @@ import io.netty.handler.codec.string.StringEncoder;
 import io.netty.util.concurrent.DefaultEventExecutorGroup;
 import io.netty.util.concurrent.EventExecutorGroup;
 import java.net.InetSocketAddress;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 class NettyServer implements Server {
+  private static final Logger LOGGER = LogManager.getLogger();
+
   private final int port;
   private final int bossThreads;
   private final int workerThreads;
@@ -69,6 +73,7 @@ class NettyServer implements Server {
 
     try {
       channelFuture = bootstrap.bind().sync();
+      LOGGER.info("Server started in port: {}", port);
     } catch (final InterruptedException e) {
       Thread.currentThread().interrupt();
       throw new RuntimeException(e);

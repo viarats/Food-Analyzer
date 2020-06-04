@@ -23,7 +23,7 @@ public class ResponseHandler extends SimpleChannelInboundHandler<String> {
 
   @Override
   public void exceptionCaught(final ChannelHandlerContext context, final Throwable cause) {
-    cause.printStackTrace();
+    communicator.printConnectionRefusedMessage();
     context.close();
   }
 }

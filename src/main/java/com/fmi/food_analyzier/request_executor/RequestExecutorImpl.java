@@ -14,6 +14,8 @@ import java.net.HttpURLConnection;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class RequestExecutorImpl implements RequestExecutor {
   private static final String GET_FOOD_ENDPOINT = "https://api.nal.usda.gov/ndb/search/";
@@ -25,6 +27,8 @@ public class RequestExecutorImpl implements RequestExecutor {
   private static final String TYPE = "b";
   private static final String FORMAT_PARAMETER = "format";
   private static final String JSON = "json";
+
+  private static final Logger LOGGER = LogManager.getLogger();
 
   private final String apiKey;
   private final HttpClient httpClient;
@@ -60,7 +64,10 @@ public class RequestExecutorImpl implements RequestExecutor {
   }
 
   private boolean isStatusValid(final HttpResponse response) {
-    return response.getStatus() == HttpURLConnection.HTTP_OK;
+    final int status = response.getStatus();
+    LOGGER.info("HTTP status code = {}", status);
+
+    return status == HttpURLConnection.HTTP_OK;
   }
 
   private String getFood(final HttpResponse response) {

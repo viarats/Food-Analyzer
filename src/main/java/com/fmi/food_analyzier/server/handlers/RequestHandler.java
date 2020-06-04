@@ -7,9 +7,12 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import java.util.Optional;
 import javax.inject.Inject;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @Sharable
 public class RequestHandler extends ChannelInboundHandlerAdapter {
+  private static Logger LOGGER = LogManager.getLogger();
   private final RequestExecutor requestExecutor;
 
   @Inject
@@ -37,7 +40,12 @@ public class RequestHandler extends ChannelInboundHandlerAdapter {
   @Override
   public void exceptionCaught(final ChannelHandlerContext context, final Throwable cause) {
     context.writeAndFlush(RequestExecutor.NO_AVAILABLE_INFORMATION_MESSAGE);
-    cause.printStackTrace();
+    LOGGER.error("Exception caught => {}", cause.getMessage());
+
+    if (!context.channel().isOpen()) {
+      LOGGER.info("Client with channel id {} left.", context.channel().id());
+    }
+
     context.close();
   }
 }

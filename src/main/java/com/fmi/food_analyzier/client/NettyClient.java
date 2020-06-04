@@ -65,8 +65,8 @@ class NettyClient implements Client {
       if (lastWriteFuture != null) {
         lastWriteFuture.sync();
       }
-    } catch (final InterruptedException e) {
-      throw new RuntimeException(e);
+    } catch (final Exception e) {
+      communicator.printConnectionRefusedMessage();
     } finally {
       group.shutdownGracefully();
     }

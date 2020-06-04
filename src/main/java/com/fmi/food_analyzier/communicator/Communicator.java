@@ -8,6 +8,8 @@ public interface Communicator {
 
   void printEnterPoint();
 
+  void printConnectionRefusedMessage();
+
   void printRequestResult(String result);
 
   RequestData readUserRequest();

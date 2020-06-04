@@ -14,6 +14,8 @@ class UserCommunicator implements Communicator {
           + "\nThe ndbno of a product can be retrieved from the \"get-food\" command";
   private static final String ENTER_POINT = "> ";
   private static final String UNKNOWN_COMMAND = "Unknown command => %s";
+  private static final String CONNECTION_REFUSED =
+      "Could not connect to server. Please, try again later";
   private static final String REGEX = "\\s+";
   private static final String DELIMITER = " ";
 
@@ -34,6 +36,11 @@ class UserCommunicator implements Communicator {
   @Override
   public void printEnterPoint() {
     writer.write(ENTER_POINT);
+  }
+
+  @Override
+  public void printConnectionRefusedMessage() {
+    writer.writeLine(CONNECTION_REFUSED);
   }
 
   @Override
