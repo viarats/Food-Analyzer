@@ -44,8 +44,7 @@ public class RequestHandler extends ChannelInboundHandlerAdapter {
 
     if (!context.channel().isOpen()) {
       LOGGER.info("Client with channel id {} left.", context.channel().id());
+      context.close();
     }
-
-    context.close();
   }
 }

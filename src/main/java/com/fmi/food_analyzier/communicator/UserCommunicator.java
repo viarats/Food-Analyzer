@@ -1,9 +1,9 @@
 package com.fmi.food_analyzier.communicator;
 
-import com.fmi.food_analyzier.communicator.reader.Reader;
-import com.fmi.food_analyzier.communicator.writer.Writer;
+import com.fmi.food_analyzier.reader.Reader;
 import com.fmi.food_analyzier.request.RequestData;
 import com.fmi.food_analyzier.request.RequestType;
+import com.fmi.food_analyzier.writer.Writer;
 import com.google.inject.Inject;
 import java.util.Arrays;
 import java.util.stream.Collectors;

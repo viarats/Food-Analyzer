@@ -1,4 +1,4 @@
-package com.fmi.food_analyzier.communicator.reader;
+package com.fmi.food_analyzier.reader;
 
 import java.util.Scanner;
 

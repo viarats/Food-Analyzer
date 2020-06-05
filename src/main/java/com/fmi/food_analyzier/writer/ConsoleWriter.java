@@ -1,4 +1,4 @@
-package com.fmi.food_analyzier.communicator.writer;
+package com.fmi.food_analyzier.writer;
 
 class ConsoleWriter implements Writer {
 

@@ -73,7 +73,7 @@ class NettyServer implements Server {
 
     try {
       channelFuture = bootstrap.bind().sync();
-      LOGGER.info("Server started in port: {}", port);
+      LOGGER.info("Server started on port => {}", port);
     } catch (final InterruptedException e) {
       Thread.currentThread().interrupt();
       throw new RuntimeException(e);
