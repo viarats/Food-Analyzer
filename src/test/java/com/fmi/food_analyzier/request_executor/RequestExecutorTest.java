@@ -1,6 +1,6 @@
 package com.fmi.food_analyzier.request_executor;
 
-import static com.fmi.food_analyzier.request_executor.RequestExecutor.NO_AVAILABLE_INFORMATION_MESSAGE;
+import static com.fmi.food_analyzier.formatter.Formatter.NO_AVAILABLE_INFORMATION_MESSAGE;
 import static com.fmi.food_analyzier.request_executor.utils.RequestExecutorUtils.generateRandomProduct;
 import static com.fmi.food_analyzier.request_executor.utils.RequestExecutorUtils.generateRandomReport;
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
@@ -13,6 +13,7 @@ import static org.testng.Assert.assertTrue;
 
 import com.fmi.food_analyzier.entities.Product;
 import com.fmi.food_analyzier.entities.report.FoodReport;
+import com.fmi.food_analyzier.formatter.Formatter;
 import com.fmi.food_analyzier.httpclient.HttpClient;
 import com.fmi.food_analyzier.httpclient.HttpResponse;
 import com.fmi.food_analyzier.request.RequestData;
@@ -32,6 +33,7 @@ public class RequestExecutorTest {
 
   @Inject private RequestExecutor executor;
   @Inject private HttpClient httpClient;
+  @Inject private Formatter formatter;
   @Inject private Gson gson;
 
   private CompletableFuture<HttpResponse> future;
@@ -46,7 +48,7 @@ public class RequestExecutorTest {
   private Object[][] provideFoodData() {
     final var product = generateRandomProduct();
     return new Object[][] {
-      {product, HTTP_OK, product.getList().toString()},
+      {product, HTTP_OK, formatter.formatProduct(product)},
       {new Product(null), HTTP_OK, NO_AVAILABLE_INFORMATION_MESSAGE},
       {product, HTTP_INTERNAL_ERROR, NO_AVAILABLE_INFORMATION_MESSAGE}
     };
@@ -68,7 +70,7 @@ public class RequestExecutorTest {
   private Object[][] provideFoodReportData() {
     final var foodReport = generateRandomReport();
     return new Object[][] {
-      {foodReport, HTTP_OK, foodReport.getInformation().toString()},
+      {foodReport, HTTP_OK, formatter.formatFoodReport(foodReport)},
       {new FoodReport(null), HTTP_OK, NO_AVAILABLE_INFORMATION_MESSAGE},
       {foodReport, HTTP_INTERNAL_ERROR, NO_AVAILABLE_INFORMATION_MESSAGE}
     };

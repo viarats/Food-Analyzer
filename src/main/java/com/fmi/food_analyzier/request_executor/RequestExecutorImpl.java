@@ -1,11 +1,11 @@
 package com.fmi.food_analyzier.request_executor;
 
+import static com.fmi.food_analyzier.formatter.Formatter.NO_AVAILABLE_INFORMATION_MESSAGE;
 import static java.net.HttpURLConnection.HTTP_OK;
 
 import com.fmi.food_analyzier.entities.Product;
-import com.fmi.food_analyzier.entities.ProductList;
 import com.fmi.food_analyzier.entities.report.FoodReport;
-import com.fmi.food_analyzier.entities.report.ReportInformation;
+import com.fmi.food_analyzier.formatter.Formatter;
 import com.fmi.food_analyzier.httpclient.HttpClient;
 import com.fmi.food_analyzier.httpclient.HttpResponse;
 import com.fmi.food_analyzier.request.RequestData;
@@ -13,7 +13,6 @@ import com.google.gson.Gson;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -31,15 +30,20 @@ public class RequestExecutorImpl implements RequestExecutor {
 
   private static final Logger LOGGER = LogManager.getLogger();
 
-  private final String apiKey;
   private final HttpClient httpClient;
   private final Gson gson;
+  private final Formatter formatter;
+  private final String apiKey;
 
   @Inject
   RequestExecutorImpl(
-      @Named("api.key") final String apiKey, final HttpClient httpClient, final Gson gson) {
+      @Named("api.key") final String apiKey,
+      final HttpClient httpClient,
+      final Formatter formatter,
+      final Gson gson) {
     this.apiKey = apiKey;
     this.httpClient = httpClient;
+    this.formatter = formatter;
     this.gson = gson;
   }
 
@@ -73,9 +77,7 @@ public class RequestExecutorImpl implements RequestExecutor {
 
   private String getFood(final HttpResponse response) {
     final var product = gson.fromJson(response.getBody(), Product.class);
-    return Optional.ofNullable(product.getList())
-        .map(ProductList::toString)
-        .orElse(NO_AVAILABLE_INFORMATION_MESSAGE);
+    return formatter.formatProduct(product);
   }
 
   private CompletableFuture<String> processGetFoodReportRequest(final String ndbno) {
@@ -98,8 +100,6 @@ public class RequestExecutorImpl implements RequestExecutor {
 
   private String getFoodReport(final HttpResponse response) {
     final var report = gson.fromJson(response.getBody(), FoodReport.class);
-    return Optional.ofNullable(report.getInformation())
-        .map(ReportInformation::toString)
-        .orElse(NO_AVAILABLE_INFORMATION_MESSAGE);
+    return formatter.formatFoodReport(report);
   }
 }

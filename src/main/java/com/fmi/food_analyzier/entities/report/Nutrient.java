@@ -3,8 +3,6 @@ package com.fmi.food_analyzier.entities.report;
 import java.util.Objects;
 
 public class Nutrient {
-  private static final String PER_GRAMS = "/100g";
-  private static final String DELIMITER = ": ";
   private final String name;
   private final String unit;
   private final String value;
@@ -15,8 +13,16 @@ public class Nutrient {
     this.value = value;
   }
 
-  String getName() {
+  public String getName() {
     return name;
+  }
+
+  public String getUnit() {
+    return unit;
+  }
+
+  public String getValue() {
+    return value;
   }
 
   @Override
@@ -33,11 +39,6 @@ public class Nutrient {
     return Objects.equals(name, nutrient.name)
         && Objects.equals(unit, nutrient.unit)
         && Objects.equals(value, nutrient.value);
-  }
-
-  @Override
-  public String toString() {
-    return name + DELIMITER + value + unit + PER_GRAMS;
   }
 
   @Override

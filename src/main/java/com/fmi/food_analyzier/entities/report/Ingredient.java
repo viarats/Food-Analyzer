@@ -3,6 +3,7 @@ package com.fmi.food_analyzier.entities.report;
 import com.google.gson.annotations.SerializedName;
 
 public class Ingredient {
+
   @SerializedName("desc")
   private final String description;
 
@@ -10,7 +11,7 @@ public class Ingredient {
     this.description = description;
   }
 
-  String getDescription() {
+  public String getDescription() {
     return description;
   }
 }

@@ -1,5 +1,7 @@
 package com.fmi.food_analyzier.server.handlers;
 
+import static com.fmi.food_analyzier.formatter.Formatter.NO_AVAILABLE_INFORMATION_MESSAGE;
+
 import com.fmi.food_analyzier.request.RequestData;
 import com.fmi.food_analyzier.request_executor.RequestExecutor;
 import io.netty.channel.ChannelHandler.Sharable;
@@ -39,7 +41,7 @@ public class RequestHandler extends ChannelInboundHandlerAdapter {
 
   @Override
   public void exceptionCaught(final ChannelHandlerContext context, final Throwable cause) {
-    context.writeAndFlush(RequestExecutor.NO_AVAILABLE_INFORMATION_MESSAGE);
+    context.writeAndFlush(NO_AVAILABLE_INFORMATION_MESSAGE);
     LOGGER.error("Exception caught => {}", cause.getMessage());
 
     if (!context.channel().isOpen()) {

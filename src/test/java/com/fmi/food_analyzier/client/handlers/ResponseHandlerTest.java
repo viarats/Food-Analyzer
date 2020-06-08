@@ -47,18 +47,17 @@ public class ResponseHandlerTest {
   void testChannelRead0FailureShouldPrintConnectionRefusedMessage() {
     final var result = UUID.randomUUID().toString();
 
-    final var errorMessage = UUID.randomUUID().toString();
-    doThrow(new RuntimeException(errorMessage)).when(communicator).printRequestResult(result);
+    final var error = new RuntimeException(UUID.randomUUID().toString());
+    doThrow(error).when(communicator).printRequestResult(result);
 
     channel.writeInbound(result);
 
     final var captor = ArgumentCaptor.forClass(Throwable.class);
     verify(handlerSpy).exceptionCaught(any(ChannelHandlerContext.class), captor.capture());
 
-    final var exception = captor.getValue();
+    final var throwable = captor.getValue();
 
-    assertEquals(exception.getClass(), RuntimeException.class);
-    assertEquals(exception.getMessage(), errorMessage);
+    assertEquals(throwable, error);
     verify(communicator).printConnectionRefusedMessage();
   }
 }
