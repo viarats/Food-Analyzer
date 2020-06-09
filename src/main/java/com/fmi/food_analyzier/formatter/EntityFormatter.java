@@ -50,7 +50,14 @@ public class EntityFormatter implements Formatter {
       final var upc = tokens[tokens.length - 1];
       final var name = extractName(tokens);
 
-      builder.append(name).append(NDBNO).append(ndbno).append(COMMA).append(UPC).append(upc);
+      builder
+          .append(name)
+          .append(COMMA)
+          .append(NDBNO)
+          .append(ndbno)
+          .append(COMMA)
+          .append(UPC)
+          .append(upc);
     } else {
       builder.append(item.getName()).append(COMMA).append(NDBNO).append(ndbno);
     }
@@ -94,7 +101,7 @@ public class EntityFormatter implements Formatter {
     stringBuilder
         .append(
             nutrients.stream()
-                .filter(nutrient -> nutrient.getName().endsWith(type.getName()))
+                .filter(nutrient -> nutrient.getName().endsWith(type.getValue()))
                 .map(this::formatNutrient)
                 .collect(Collectors.joining()))
         .append(NEW_LINE);

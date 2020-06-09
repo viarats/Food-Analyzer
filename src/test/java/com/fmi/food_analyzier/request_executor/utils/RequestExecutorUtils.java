@@ -3,11 +3,13 @@ package com.fmi.food_analyzier.request_executor.utils;
 import com.fmi.food_analyzier.entities.Item;
 import com.fmi.food_analyzier.entities.Product;
 import com.fmi.food_analyzier.entities.ProductList;
+import com.fmi.food_analyzier.entities.enums.NutrientType;
 import com.fmi.food_analyzier.entities.report.Food;
 import com.fmi.food_analyzier.entities.report.FoodReport;
 import com.fmi.food_analyzier.entities.report.Ingredient;
 import com.fmi.food_analyzier.entities.report.Nutrient;
 import com.fmi.food_analyzier.entities.report.ReportInformation;
+import java.util.Arrays;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
@@ -56,6 +58,17 @@ public class RequestExecutorUtils {
 
   private static Nutrient generateRandomNutrient() {
     return new Nutrient(
-        UUID.randomUUID().toString(), UUID.randomUUID().toString(), UUID.randomUUID().toString());
+        UUID.randomUUID().toString() + getRandomNutrientName(),
+        UUID.randomUUID().toString(),
+        UUID.randomUUID().toString());
+  }
+
+  private static String getRandomNutrientName() {
+    final var index = ThreadLocalRandom.current().nextInt(NutrientType.values().length);
+    return Arrays.stream(NutrientType.values())
+        .map(NutrientType::getValue)
+        .skip(index)
+        .findFirst()
+        .orElse(null);
   }
 }
