@@ -1,12 +1,12 @@
 package com.fmi.food_analyzier.formatter;
 
-import com.fmi.food_analyzier.entities.Product;
-import com.fmi.food_analyzier.entities.report.FoodReport;
+import com.fmi.food_analyzier.entities.ProductList;
+import com.fmi.food_analyzier.entities.report.Food;
 
 public interface Formatter {
   String NO_AVAILABLE_INFORMATION_MESSAGE = "No available information for this product";
 
-  String formatProduct(Product product);
+  String formatProductList(ProductList product);
 
-  String formatFoodReport(FoodReport foodReport);
+  String formatFoodReport(Food foodReport);
 }

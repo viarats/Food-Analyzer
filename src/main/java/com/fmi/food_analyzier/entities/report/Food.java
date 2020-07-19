@@ -5,13 +5,15 @@ import java.util.Set;
 
 public class Food {
 
-  @SerializedName("ing")
-  private final Ingredient ingredients;
-
+  @SerializedName("description")
   private final String name;
+
+  private final String ingredients;
+
+  @SerializedName("foodNutrients")
   private final Set<Nutrient> nutrients;
 
-  public Food(final String name, final Ingredient ingredients, final Set<Nutrient> nutrients) {
+  public Food(final String name, final String ingredients, final Set<Nutrient> nutrients) {
     this.name = name;
     this.ingredients = ingredients;
     this.nutrients = nutrients;
@@ -21,7 +23,7 @@ public class Food {
     return name;
   }
 
-  public Ingredient getIngredients() {
+  public String getIngredients() {
     return ingredients;
   }
 

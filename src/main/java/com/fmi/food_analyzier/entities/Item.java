@@ -1,11 +1,19 @@
 package com.fmi.food_analyzier.entities;
 
+import com.google.gson.annotations.SerializedName;
 import java.util.Objects;
 
 public class Item {
+  @SerializedName("description")
   private final String name;
-  private final String ndbno;
+
+  @SerializedName("dataType")
   private final String group;
+
+  @SerializedName("fdcId")
+  private final String ndbno;
+
+  @SerializedName("gtinUpc")
   private final String upc;
 
   public Item(final String name, final String ndbno, final String group, final String upc) {

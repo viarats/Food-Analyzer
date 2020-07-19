@@ -96,6 +96,8 @@ public class CommunicatorTest {
     final var expectedResult = new RequestData(RequestType.GET_FOOD, food);
     assertEquals(actual, expectedResult);
 
-    verify(writer, times(3)).writeLine(String.format(UNKNOWN_COMMAND, invalidRequest));
+    final int expectedInvocationTimes = 3;
+    verify(writer, times(expectedInvocationTimes))
+        .writeLine(String.format(UNKNOWN_COMMAND, invalidRequest));
   }
 }

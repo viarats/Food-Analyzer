@@ -19,6 +19,12 @@ public class TestModule extends AbstractModule {
     bind(String.class)
         .annotatedWith(Names.named("api.key"))
         .toInstance(UUID.randomUUID().toString());
+    bind(String.class)
+        .annotatedWith(Names.named("get.food.endpoint"))
+        .toInstance(UUID.randomUUID().toString());
+    bind(String.class)
+        .annotatedWith(Names.named("get.food.report.endpoint"))
+        .toInstance(UUID.randomUUID().toString());
     bind(HttpClient.class).toInstance(mock(HttpClient.class));
   }
 }

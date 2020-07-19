@@ -5,7 +5,7 @@ import java.util.Set;
 
 public class ProductList {
 
-  @SerializedName("item")
+  @SerializedName("foods")
   private final Set<Item> items;
 
   public ProductList(final Set<Item> items) {

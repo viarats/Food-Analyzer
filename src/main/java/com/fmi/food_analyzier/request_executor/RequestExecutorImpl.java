@@ -3,8 +3,8 @@ package com.fmi.food_analyzier.request_executor;
 import static com.fmi.food_analyzier.formatter.Formatter.NO_AVAILABLE_INFORMATION_MESSAGE;
 import static java.net.HttpURLConnection.HTTP_OK;
 
-import com.fmi.food_analyzier.entities.Product;
-import com.fmi.food_analyzier.entities.report.FoodReport;
+import com.fmi.food_analyzier.entities.ProductList;
+import com.fmi.food_analyzier.entities.report.Food;
 import com.fmi.food_analyzier.formatter.Formatter;
 import com.fmi.food_analyzier.httpclient.HttpClient;
 import com.fmi.food_analyzier.httpclient.HttpResponse;
@@ -18,30 +18,30 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class RequestExecutorImpl implements RequestExecutor {
-  private static final String GET_FOOD_ENDPOINT = "https://api.nal.usda.gov/ndb/search/";
-  private static final String GET_FOOD_REPORT_ENDPOINT = "https://api.nal.usda.gov/ndb/reports/";
-  private static final String API_KEY_PARAMETER = "api_key";
-  private static final String FOOD_PARAMETER = "q";
-  private static final String NDBNO_PARAMETER = "ndbno";
-  private static final String TYPE_PARAMETER = "type";
-  private static final String TYPE = "b";
-  private static final String FORMAT_PARAMETER = "format";
-  private static final String JSON = "json";
-
   private static final Logger LOGGER = LogManager.getLogger();
+
+  private static final String API_KEY_PARAMETER = "api_key";
+  private static final String FOOD_PARAMETER = "query";
 
   private final HttpClient httpClient;
   private final Gson gson;
   private final Formatter formatter;
+
   private final String apiKey;
+  private final String getFoodEndpoint;
+  private final String getFoodReportEndpoint;
 
   @Inject
   RequestExecutorImpl(
       @Named("api.key") final String apiKey,
+      @Named("get.food.endpoint") final String getFoodEndpoint,
+      @Named("get.food.report.endpoint") final String getFoodReportEndpoint,
       final HttpClient httpClient,
       final Formatter formatter,
       final Gson gson) {
     this.apiKey = apiKey;
+    this.getFoodEndpoint = getFoodEndpoint;
+    this.getFoodReportEndpoint = getFoodReportEndpoint;
     this.httpClient = httpClient;
     this.formatter = formatter;
     this.gson = gson;
@@ -62,7 +62,7 @@ public class RequestExecutorImpl implements RequestExecutor {
 
   private CompletableFuture<String> processGetFoodRequest(final String food) {
     final var parameters = Map.of(API_KEY_PARAMETER, apiKey, FOOD_PARAMETER, food);
-    final var httpResponse = httpClient.executeGetRequest(GET_FOOD_ENDPOINT, parameters);
+    final var httpResponse = httpClient.executeGetRequest(getFoodEndpoint, parameters);
 
     return httpResponse.thenApply(
         response -> isStatusValid(response) ? getFood(response) : NO_AVAILABLE_INFORMATION_MESSAGE);
@@ -76,30 +76,22 @@ public class RequestExecutorImpl implements RequestExecutor {
   }
 
   private String getFood(final HttpResponse response) {
-    final var product = gson.fromJson(response.getBody(), Product.class);
-    return formatter.formatProduct(product);
+    final var productList = gson.fromJson(response.getBody(), ProductList.class);
+    return formatter.formatProductList(productList);
   }
 
   private CompletableFuture<String> processGetFoodReportRequest(final String ndbno) {
-    final var parameters =
-        Map.of(
-            API_KEY_PARAMETER,
-            apiKey,
-            NDBNO_PARAMETER,
-            ndbno,
-            TYPE_PARAMETER,
-            TYPE,
-            FORMAT_PARAMETER,
-            JSON);
+    final var parameters = Map.of(API_KEY_PARAMETER, apiKey);
+    final var url = getFoodReportEndpoint + ndbno;
 
-    final var httpResponse = httpClient.executeGetRequest(GET_FOOD_REPORT_ENDPOINT, parameters);
+    final var httpResponse = httpClient.executeGetRequest(url, parameters);
     return httpResponse.thenApply(
         response ->
             isStatusValid(response) ? getFoodReport(response) : NO_AVAILABLE_INFORMATION_MESSAGE);
   }
 
   private String getFoodReport(final HttpResponse response) {
-    final var report = gson.fromJson(response.getBody(), FoodReport.class);
+    final var report = gson.fromJson(response.getBody(), Food.class);
     return formatter.formatFoodReport(report);
   }
 }

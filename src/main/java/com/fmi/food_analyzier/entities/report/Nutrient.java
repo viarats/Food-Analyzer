@@ -1,27 +1,26 @@
 package com.fmi.food_analyzier.entities.report;
 
+import com.google.gson.annotations.SerializedName;
 import java.util.Objects;
 
 public class Nutrient {
-  private final String name;
-  private final String unit;
-  private final String value;
 
-  public Nutrient(final String name, final String unit, final String value) {
-    this.name = name;
-    this.unit = unit;
+  @SerializedName("nutrient")
+  private final NutrientData nutrientData;
+
+  @SerializedName("amount")
+  private final float value;
+
+  public Nutrient(final NutrientData nutrientData, final float value) {
+    this.nutrientData = nutrientData;
     this.value = value;
   }
 
-  public String getName() {
-    return name;
+  public NutrientData getNutrientData() {
+    return nutrientData;
   }
 
-  public String getUnit() {
-    return unit;
-  }
-
-  public String getValue() {
+  public Float getValue() {
     return value;
   }
 
@@ -35,14 +34,13 @@ public class Nutrient {
       return false;
     }
 
-    final var nutrient = (Nutrient) o;
-    return Objects.equals(name, nutrient.name)
-        && Objects.equals(unit, nutrient.unit)
-        && Objects.equals(value, nutrient.value);
+    final Nutrient nutrient = (Nutrient) o;
+    return Float.compare(nutrient.value, value) == 0
+        && Objects.equals(nutrientData, nutrient.nutrientData);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(name, unit, value);
+    return Objects.hash(nutrientData, value);
   }
 }

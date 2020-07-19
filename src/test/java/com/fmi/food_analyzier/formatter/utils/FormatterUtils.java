@@ -33,14 +33,14 @@ public class FormatterUtils {
     return "Name: " + name + ", NDBNO: " + ndbno + ", UPC: " + upc;
   }
 
-  public static String formatReport(final Food food) {
+  public static String formatReport(final Food foodReport) {
     return "Name: "
-        + food.getName()
+        + foodReport.getName()
         + NEW_LINE
         + "Ingredients: "
-        + food.getIngredients().getDescription()
+        + foodReport.getIngredients()
         + NEW_LINE
-        + formatNutrients(food.getNutrients());
+        + formatNutrients(foodReport.getNutrients());
   }
 
   private static String formatNutrients(final Set<Nutrient> nutrients) {
@@ -48,13 +48,15 @@ public class FormatterUtils {
         .map(
             type ->
                 nutrients.stream()
-                        .filter(nutrient -> nutrient.getName().endsWith(type.getValue()))
+                        .filter(
+                            nutrient ->
+                                nutrient.getNutrientData().getName().endsWith(type.getValue()))
                         .map(
                             nutrient ->
-                                nutrient.getName()
+                                nutrient.getNutrientData().getName()
                                     + ": "
                                     + nutrient.getValue()
-                                    + nutrient.getUnit()
+                                    + nutrient.getNutrientData().getUnit()
                                     + "/100g")
                         .collect(Collectors.joining())
                     + NEW_LINE)

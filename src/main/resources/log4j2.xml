@@ -1,14 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="info">
     <Appenders>
-        <Console name="console" target="SYSTEM_OUT">
+        <Console name="console-log" target="SYSTEM_OUT">
             <PatternLayout
                     pattern="[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n"/>
         </Console>
+        <RollingFile name="food-analyzer-log" fileName="logs/food-analyzer.log"
+                     filePattern="logs/food-analyzer-%d{yyyy-MM-dd}.log">
+            <PatternLayout pattern="[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+            </Policies>
+        </RollingFile>
     </Appenders>
+
     <Loggers>
         <Root level="info" additivity="false">
-            <AppenderRef ref="console"/>
+            <AppenderRef ref="console-log"/>
+            <AppenderRef ref="food-analyzer-log"/>
         </Root>
     </Loggers>
 </Configuration>

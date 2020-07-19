@@ -1,14 +1,11 @@
 package com.fmi.food_analyzier.request_executor.utils;
 
 import com.fmi.food_analyzier.entities.Item;
-import com.fmi.food_analyzier.entities.Product;
 import com.fmi.food_analyzier.entities.ProductList;
 import com.fmi.food_analyzier.entities.enums.NutrientType;
 import com.fmi.food_analyzier.entities.report.Food;
-import com.fmi.food_analyzier.entities.report.FoodReport;
-import com.fmi.food_analyzier.entities.report.Ingredient;
 import com.fmi.food_analyzier.entities.report.Nutrient;
-import com.fmi.food_analyzier.entities.report.ReportInformation;
+import com.fmi.food_analyzier.entities.report.NutrientData;
 import java.util.Arrays;
 import java.util.Set;
 import java.util.UUID;
@@ -19,8 +16,8 @@ import java.util.stream.Stream;
 public class RequestExecutorUtils {
   private static final int LIMIT = 15;
 
-  public static Product generateRandomProduct() {
-    return new Product(new ProductList(generateRandomItems()));
+  public static ProductList generateRandomProductList() {
+    return new ProductList(generateRandomItems());
   }
 
   private static Set<Item> generateRandomItems() {
@@ -38,15 +35,9 @@ public class RequestExecutorUtils {
         UUID.randomUUID().toString());
   }
 
-  public static FoodReport generateRandomReport() {
-    return new FoodReport(new ReportInformation(generateRandomFood()));
-  }
-
-  private static Food generateRandomFood() {
+  public static Food generateRandomReport() {
     return new Food(
-        UUID.randomUUID().toString(),
-        new Ingredient(UUID.randomUUID().toString()),
-        generateRandomNutrients());
+        UUID.randomUUID().toString(), UUID.randomUUID().toString(), generateRandomNutrients());
   }
 
   private static Set<Nutrient> generateRandomNutrients() {
@@ -58,9 +49,9 @@ public class RequestExecutorUtils {
 
   private static Nutrient generateRandomNutrient() {
     return new Nutrient(
-        UUID.randomUUID().toString() + getRandomNutrientName(),
-        UUID.randomUUID().toString(),
-        UUID.randomUUID().toString());
+        new NutrientData(
+            UUID.randomUUID().toString() + getRandomNutrientName(), UUID.randomUUID().toString()),
+        ThreadLocalRandom.current().nextFloat());
   }
 
   private static String getRandomNutrientName() {

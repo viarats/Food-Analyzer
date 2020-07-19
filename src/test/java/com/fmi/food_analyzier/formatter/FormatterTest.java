@@ -8,10 +8,9 @@ import static com.fmi.food_analyzier.formatter.utils.FormatterUtils.generateItem
 import static com.fmi.food_analyzier.request_executor.utils.RequestExecutorUtils.generateRandomReport;
 import static org.testng.Assert.assertEquals;
 
-import com.fmi.food_analyzier.entities.Product;
 import com.fmi.food_analyzier.entities.ProductList;
-import com.fmi.food_analyzier.entities.report.FoodReport;
 import com.google.inject.Inject;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import org.testng.annotations.DataProvider;
@@ -46,21 +45,21 @@ public class FormatterTest {
             + NEW_LINE;
 
     return new Object[][] {
-      {new Product(new ProductList(items)), expectedProduct},
-      {new Product(new ProductList(brandedItems)), expectedBrandedProduct}
+      {new ProductList(items), expectedProduct},
+      {new ProductList(brandedItems), expectedBrandedProduct}
     };
   }
 
   @Test(dataProvider = "productData")
-  void testFormatProduct(final Product product, final String expected) {
-    final var actual = formatter.formatProduct(product);
+  void testFormatProduct(final ProductList productList, final String expected) {
+    final var actual = formatter.formatProductList(productList);
     assertEquals(actual, expected);
   }
 
   @Test
-  void testFormatProductWithProductListEqualToNullShouldReturnNoInformationMessage() {
-    final var product = new Product(null);
-    final var actual = formatter.formatProduct(product);
+  void testFormatProductWithEmptyProductListShouldReturnNoInformationMessage() {
+    final var productList = new ProductList(Set.of());
+    final var actual = formatter.formatProductList(productList);
 
     assertEquals(actual, NO_AVAILABLE_INFORMATION_MESSAGE);
   }
@@ -70,16 +69,8 @@ public class FormatterTest {
     final var report = generateRandomReport();
 
     final var actual = formatter.formatFoodReport(report);
-    final var expected = formatReport(report.getInformation().getFood());
+    final var expected = formatReport(report);
 
     assertEquals(actual, expected);
-  }
-
-  @Test
-  void testFormatFoodReportWithReportInformationEqualToNullShouldReturnNoInformationMessage() {
-    final var report = new FoodReport(null);
-    final var actual = formatter.formatFoodReport(report);
-
-    assertEquals(actual, NO_AVAILABLE_INFORMATION_MESSAGE);
   }
 }

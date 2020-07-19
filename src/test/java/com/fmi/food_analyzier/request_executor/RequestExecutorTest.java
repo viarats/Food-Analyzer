@@ -1,7 +1,7 @@
 package com.fmi.food_analyzier.request_executor;
 
 import static com.fmi.food_analyzier.formatter.Formatter.NO_AVAILABLE_INFORMATION_MESSAGE;
-import static com.fmi.food_analyzier.request_executor.utils.RequestExecutorUtils.generateRandomProduct;
+import static com.fmi.food_analyzier.request_executor.utils.RequestExecutorUtils.generateRandomProductList;
 import static com.fmi.food_analyzier.request_executor.utils.RequestExecutorUtils.generateRandomReport;
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 import static java.net.HttpURLConnection.HTTP_OK;
@@ -11,8 +11,8 @@ import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
-import com.fmi.food_analyzier.entities.Product;
-import com.fmi.food_analyzier.entities.report.FoodReport;
+import com.fmi.food_analyzier.entities.ProductList;
+import com.fmi.food_analyzier.entities.report.Food;
 import com.fmi.food_analyzier.formatter.Formatter;
 import com.fmi.food_analyzier.httpclient.HttpClient;
 import com.fmi.food_analyzier.httpclient.HttpResponse;
@@ -21,6 +21,7 @@ import com.fmi.food_analyzier.request.RequestType;
 import com.fmi.food_analyzier.request_executor.modules.TestModule;
 import com.google.gson.Gson;
 import com.google.inject.Inject;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import org.testng.annotations.BeforeMethod;
@@ -46,17 +47,17 @@ public class RequestExecutorTest {
 
   @DataProvider(name = "foodData")
   private Object[][] provideFoodData() {
-    final var product = generateRandomProduct();
+    final var productList = generateRandomProductList();
     return new Object[][] {
-      {product, HTTP_OK, formatter.formatProduct(product)},
-      {new Product(null), HTTP_OK, NO_AVAILABLE_INFORMATION_MESSAGE},
-      {product, HTTP_INTERNAL_ERROR, NO_AVAILABLE_INFORMATION_MESSAGE}
+      {productList, HTTP_OK, formatter.formatProductList(productList)},
+      {new ProductList(Set.of()), HTTP_OK, NO_AVAILABLE_INFORMATION_MESSAGE},
+      {productList, HTTP_INTERNAL_ERROR, NO_AVAILABLE_INFORMATION_MESSAGE}
     };
   }
 
   @Test(dataProvider = "foodData")
-  void testGetFoodRequest(final Product product, final int status, final String expected) {
-    final var response = new HttpResponse(gson.toJson(product), status);
+  void testGetFoodRequest(final ProductList productList, final int status, final String expected) {
+    final var response = new HttpResponse(gson.toJson(productList), status);
     future.complete(response);
 
     final var request = new RequestData(RequestType.GET_FOOD, UUID.randomUUID().toString());
@@ -71,14 +72,13 @@ public class RequestExecutorTest {
     final var foodReport = generateRandomReport();
     return new Object[][] {
       {foodReport, HTTP_OK, formatter.formatFoodReport(foodReport)},
-      {new FoodReport(null), HTTP_OK, NO_AVAILABLE_INFORMATION_MESSAGE},
       {foodReport, HTTP_INTERNAL_ERROR, NO_AVAILABLE_INFORMATION_MESSAGE}
     };
   }
 
   @Test(dataProvider = "foodReportData")
-  void testGetFoodReportRequest(final FoodReport report, final int status, final String expected) {
-    final var response = new HttpResponse(gson.toJson(report), status);
+  void testGetFoodReportRequest(final Food foodReport, final int status, final String expected) {
+    final var response = new HttpResponse(gson.toJson(foodReport), status);
     future.complete(response);
 
     final var request = new RequestData(RequestType.GET_FOOD_REPORT, UUID.randomUUID().toString());

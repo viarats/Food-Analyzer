@@ -3,12 +3,10 @@ package com.fmi.food_analyzier.formatter;
 import static java.util.stream.Collectors.joining;
 
 import com.fmi.food_analyzier.entities.Item;
-import com.fmi.food_analyzier.entities.Product;
 import com.fmi.food_analyzier.entities.ProductList;
 import com.fmi.food_analyzier.entities.enums.NutrientType;
-import com.fmi.food_analyzier.entities.report.FoodReport;
+import com.fmi.food_analyzier.entities.report.Food;
 import com.fmi.food_analyzier.entities.report.Nutrient;
-import com.fmi.food_analyzier.entities.report.ReportInformation;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.Set;
@@ -30,15 +28,11 @@ public class EntityFormatter implements Formatter {
   private static final String COMMA = ",";
 
   @Override
-  public String formatProduct(final Product product) {
-    return Optional.ofNullable(product.getList())
-        .map(this::formatProductList)
-        .orElse(NO_AVAILABLE_INFORMATION_MESSAGE);
-  }
-
-  private String formatProductList(final ProductList productList) {
-    return productList.getItems().stream().map(this::formatItem).collect(joining(NEW_LINE))
-        + NEW_LINE;
+  public String formatProductList(final ProductList productList) {
+    final var items = productList.getItems();
+    return items.isEmpty()
+        ? NO_AVAILABLE_INFORMATION_MESSAGE
+        : items.stream().map(this::formatItem).collect(joining(NEW_LINE)) + NEW_LINE;
   }
 
   private String formatItem(final Item item) {
@@ -73,25 +67,16 @@ public class EntityFormatter implements Formatter {
   }
 
   @Override
-  public String formatFoodReport(final FoodReport foodReport) {
-    return Optional.ofNullable(foodReport.getInformation())
-        .map(this::formatReportInformation)
-        .orElse(NO_AVAILABLE_INFORMATION_MESSAGE);
-  }
+  public String formatFoodReport(final Food foodReport) {
+    final var builder = new StringBuilder(NAME);
+    builder.append(foodReport.getName());
 
-  private String formatReportInformation(final ReportInformation information) {
-    final var food = information.getFood();
-    final StringBuilder builder = new StringBuilder(NAME);
-    builder.append(food.getName());
-
-    Optional.ofNullable(food.getIngredients())
-        .ifPresent(
-            ingredients ->
-                builder.append(NEW_LINE).append(INGREDIENTS).append(ingredients.getDescription()));
+    Optional.ofNullable(foodReport.getIngredients())
+        .ifPresent(ingredients -> builder.append(NEW_LINE).append(INGREDIENTS).append(ingredients));
 
     builder.append(NEW_LINE);
     Arrays.stream(NutrientType.values())
-        .forEach(type -> appendNutrient(builder, food.getNutrients(), type));
+        .forEach(type -> appendNutrient(builder, foodReport.getNutrients(), type));
 
     return builder.toString();
   }
@@ -101,13 +86,17 @@ public class EntityFormatter implements Formatter {
     stringBuilder
         .append(
             nutrients.stream()
-                .filter(nutrient -> nutrient.getName().endsWith(type.getValue()))
+                .filter(nutrient -> nutrient.getNutrientData().getName().endsWith(type.getValue()))
                 .map(this::formatNutrient)
                 .collect(Collectors.joining()))
         .append(NEW_LINE);
   }
 
   private String formatNutrient(final Nutrient nutrient) {
-    return nutrient.getName() + DELIMITER + nutrient.getValue() + nutrient.getUnit() + PER_GRAMS;
+    return nutrient.getNutrientData().getName()
+        + DELIMITER
+        + nutrient.getValue()
+        + nutrient.getNutrientData().getUnit()
+        + PER_GRAMS;
   }
 }
